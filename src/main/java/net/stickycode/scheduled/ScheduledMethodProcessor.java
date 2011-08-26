@@ -26,11 +26,11 @@ public class ScheduledMethodProcessor
 
   private Logger log = LoggerFactory.getLogger(ScheduledMethodProcessor.class);
 
-  private final SchedulingSystem schedulingSystem;
+  private final ScheduledRunnableRepository schedulingSystem;
 
   private final ConfiguredConfiguration scheduleConfiguration;
 
-  public ScheduledMethodProcessor(SchedulingSystem schedulingSystem, ConfiguredConfiguration scheduleConfiguration) {
+  public ScheduledMethodProcessor(ScheduledRunnableRepository schedulingSystem, ConfiguredConfiguration scheduleConfiguration) {
     super(Scheduled.class);
     this.schedulingSystem = schedulingSystem;
     this.scheduleConfiguration = scheduleConfiguration;
