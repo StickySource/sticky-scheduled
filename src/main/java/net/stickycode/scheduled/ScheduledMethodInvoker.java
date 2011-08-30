@@ -42,25 +42,25 @@ public class ScheduledMethodInvoker
     try {
       method.invoke(target, new Object[0]);
     }
-    catch (TransientException e) {
-      log.error("Failed to execute {}", this, e);
-    }
     catch (IllegalArgumentException e) {
       throw new ThisShouldNeverHappenException(e, 
-          "No arguments are passed to the scheduled method {} so this should never happen",
-          toString());
+          "{}. Failed to invoke the scheduled method {} on class {}", 
+          e.getMessage(), toString(), target.getClass().getName());
     }
     catch (IllegalAccessException e) {
       throw new RuntimeException(e);
     }
     catch (InvocationTargetException e) {
-      throw new ScheduledMethodExecutionFailureException(e, method, target);
+      if (e.getCause() instanceof TransientException)
+        log.error("Failed to execute {}", this, e);
+      else
+        throw new ScheduledMethodExecutionFailureException(e, method, target);
     }
   }
 
   @Override
   public String toString() {
-    return target.getClass().getSimpleName() + "." + method.getName();
+    return method.getDeclaringClass().getSimpleName() + "." + method.getName();
   }
 
   @Override

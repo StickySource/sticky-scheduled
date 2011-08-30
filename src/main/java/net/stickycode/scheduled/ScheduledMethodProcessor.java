@@ -30,10 +30,10 @@ public class ScheduledMethodProcessor
 
   private final ConfiguredConfiguration scheduleConfiguration;
 
-  public ScheduledMethodProcessor(ScheduledRunnableRepository schedulingSystem, ConfiguredConfiguration scheduleConfiguration) {
+  public ScheduledMethodProcessor(ScheduledRunnableRepository scheduleRepository, ConfiguredConfiguration configurationOfBeanSchedules) {
     super(Scheduled.class);
-    this.schedulingSystem = schedulingSystem;
-    this.scheduleConfiguration = scheduleConfiguration;
+    this.schedulingSystem = scheduleRepository;
+    this.scheduleConfiguration = configurationOfBeanSchedules;
   }
 
   @Override
