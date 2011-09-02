@@ -12,6 +12,8 @@
  */
 package net.stickycode.scheduled.configuration;
 
+import javax.inject.Inject;
+
 import net.stickycode.coercion.AbstractFailedToCoerceValueException;
 import net.stickycode.coercion.Coercion;
 import net.stickycode.coercion.CoercionTarget;
@@ -22,14 +24,16 @@ import net.stickycode.stereotype.component.StickyMapper;
 @StickyMapper
 public class ScheduleConfigurationCoercion
     implements Coercion<Schedule> {
+  
+  @Inject
+  private ScheduleParser parser;
 
   @Override
   public Schedule coerce(CoercionTarget type, String value) throws AbstractFailedToCoerceValueException {
-    return parse(value);
-  }
-
-  private Schedule parse(String value) {
-    return new Schedule(0, 1);
+    if (value.length() == 0)
+      throw new ScheduleMustBeDefinedButTheValueWasBlankException(type);
+    
+    return parser.parse(value);
   }
 
   @Override
