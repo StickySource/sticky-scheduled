@@ -12,40 +12,30 @@
  */
 package net.stickycode.scheduled.configuration;
 
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
 
-public abstract class ScheduleParser {
+public class PeriodicScheduleParser
+    extends ScheduleParser {
 
-  public Matcher matches(String value) {
-    return getPattern().matcher(value);
-  }
-  
-  protected abstract Pattern getPattern();
-  
-  abstract Schedule parse(Matcher matched);
+  private Pattern periodic = Pattern.compile("every ([0-9]+)? ?([a-zA-Z]+)$");
 
-  protected long parseNumber(String group) {
-    if (group == null)
-      return 1;
-  
-    return Long.valueOf(group);
+  protected Pattern getPattern() {
+    return periodic;
   }
 
-  protected TimeUnit parseTimeUnit(String period) {
-    try {
-      if (period.endsWith("s") || period.endsWith("S"))
-        return TimeUnit.valueOf(period.toUpperCase(Locale.US));
-  
-      return TimeUnit.valueOf(period.toUpperCase(Locale.US) + "S");
-    }
-    catch (IllegalArgumentException e) {
-      throw new UnsupportedUnitForSchedulingException(e, period);
-    }
+  @Override
+  public Schedule parse(Matcher match) {
+    long period = parseNumber(match.group(1));
+    TimeUnit periodUnit = parseTimeUnit(match.group(2));
+    if (TimeUnit.NANOSECONDS.equals(periodUnit))
+      throw new UnsupportedUnitForSchedulingException(periodUnit.toString());
+
+    return new PeriodicSchedule(period, periodUnit);
   }
 
 }

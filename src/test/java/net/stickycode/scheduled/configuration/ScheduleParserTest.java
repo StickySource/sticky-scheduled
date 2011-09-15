@@ -12,15 +12,31 @@
  */
 package net.stickycode.scheduled.configuration;
 
-import static org.fest.assertions.Assertions.assertThat;
-
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.stickycode.scheduled.Schedule;
 
 import org.junit.Test;
 
 public class ScheduleParserTest {
 
-  @Test(expected = UnknownUnitForSchedulingException.class)
+  private final class NoopScheduleParser
+      extends ScheduleParser {
+
+    @Override
+    protected Pattern getPattern() {
+      return null;
+    }
+
+    @Override
+    Schedule parse(Matcher matched) {
+      return null;
+    }
+  }
+
+  @Test(expected = UnsupportedUnitForSchedulingException.class)
   public void undefinedUnit() {
     parseUnit("rubbish");
   }
@@ -47,25 +63,8 @@ public class ScheduleParserTest {
     }
   }
 
-  @Test
-  public void withMultiplier() {
-    assertThat(new ScheduleParser().parse("every 30 seconds").getPeriod()).isEqualTo(30);
-    assertThat(new ScheduleParser().parse("every second").getPeriod()).isEqualTo(1);
-    assertThat(new ScheduleParser().parse("every 1 hour").getPeriod()).isEqualTo(60 * 60);
-    assertThat(new ScheduleParser().parse("every 3 hours").getPeriod()).isEqualTo(60 * 60 * 3);
-    assertThat(new ScheduleParser().parse("every 3 days").getPeriod()).isEqualTo(60 * 60 * 24 * 3);
-  }
-  
-  @Test
-  public void withDelay() {
-    assertThat(new ScheduleParser().parse("every 30 seconds").getPeriod()).isEqualTo(30);
-    assertThat(new ScheduleParser().parse("every second").getPeriod()).isEqualTo(1);
-    assertThat(new ScheduleParser().parse("every 1 hour").getPeriod()).isEqualTo(60 * 60);
-    assertThat(new ScheduleParser().parse("every 3 hours").getPeriod()).isEqualTo(60 * 60 * 3);
-    assertThat(new ScheduleParser().parse("every 3 days").getPeriod()).isEqualTo(60 * 60 * 24 * 3);
-  }
 
-  private Object parseUnit(String string) {
-    return new ScheduleParser().parseUnit(string);
+  private TimeUnit parseUnit(String string) {
+    return new NoopScheduleParser().parseTimeUnit(string);
   }
 }

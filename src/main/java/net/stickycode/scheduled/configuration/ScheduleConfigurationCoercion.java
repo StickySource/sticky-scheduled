@@ -12,11 +12,14 @@
  */
 package net.stickycode.scheduled.configuration;
 
-import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
 
 import net.stickycode.coercion.AbstractFailedToCoerceValueException;
 import net.stickycode.coercion.Coercion;
 import net.stickycode.coercion.CoercionTarget;
+import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
 import net.stickycode.scheduled.ScheduleConfiguration;
 import net.stickycode.stereotype.component.StickyMapper;
@@ -25,15 +28,20 @@ import net.stickycode.stereotype.component.StickyMapper;
 public class ScheduleConfigurationCoercion
     implements Coercion<Schedule> {
   
-  @Inject
-  private ScheduleParser parser;
+  private List<ScheduleParser> parsers = Arrays.asList(new PeriodicScheduleParser(), new AlignedPeriodicScheduleParser());
 
   @Override
   public Schedule coerce(CoercionTarget type, String value) throws AbstractFailedToCoerceValueException {
     if (value.length() == 0)
       throw new ScheduleMustBeDefinedButTheValueWasBlankException(type);
     
-    return parser.parse(value);
+    for (ScheduleParser parser : parsers) {
+      Matcher matcher = parser.matches(value);
+      if (matcher.matches())
+        return parser.parse(matcher);
+    }
+    
+    throw new ScheduleDefintionIsNotValidException(value);
   }
 
   @Override
@@ -41,7 +49,7 @@ public class ScheduleConfigurationCoercion
     if (type.getType().isAssignableFrom(ScheduleConfiguration.class))
       return true;
 
-    if (type.getType().isAssignableFrom(Schedule.class))
+    if (type.getType().isAssignableFrom(PeriodicSchedule.class))
       return true;
 
     return false;

@@ -28,7 +28,7 @@ public class ScheduleConfiguration
 
   @Override
   public Class<?> getType() {
-    return Schedule.class;
+    return PeriodicSchedule.class;
   }
 
   @Override

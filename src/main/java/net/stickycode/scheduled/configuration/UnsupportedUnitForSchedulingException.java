@@ -18,11 +18,15 @@ import net.stickycode.exception.PermanentException;
 
 
 @SuppressWarnings("serial")
-public class UnknownUnitForSchedulingException
+public class UnsupportedUnitForSchedulingException
     extends PermanentException {
 
-  public UnknownUnitForSchedulingException(IllegalArgumentException e, String period) {
-    super(e, "Scheduling contained unit '{}' which is undefined, expected on of {}", period, TimeUnit.values());
+  public UnsupportedUnitForSchedulingException(IllegalArgumentException e, String period) {
+    super(e, "Scheduling contained unit '{}' which failed to be coerced, expected one of {} excepting NANOSECONDS as they are too unreliable", period, TimeUnit.values());
+  }
+  
+  public UnsupportedUnitForSchedulingException(String period) {
+    super("Scheduling contained unit '{}' which is unsupported, expected one of {} excepting NANOSECONDS as they are too unreliable", period, TimeUnit.values());
   }
 
 }
