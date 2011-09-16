@@ -14,11 +14,15 @@ package net.stickycode.scheduled.configuration;
 
 import static org.fest.assertions.Assertions.assertThat;
 import net.stickycode.coercion.CoercionType;
+import net.stickycode.fest.ScheduleAssert;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
-import net.stickycode.scheduled.ScheduleAssert;
 import net.stickycode.scheduled.ScheduleConfiguration;
 
+import org.joda.time.DateTime;
+import org.joda.time.DateTimeUtils;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +30,18 @@ import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ScheduleConfigurationCoercionTest {
+
+  @Before
+  public void freezeTime() {
+    DateTime now = new DateTime();
+    DateTime midnight = now.minusMillis(now.getMillisOfDay());
+    DateTimeUtils.setCurrentMillisFixed(midnight.getMillis());
+  }
+
+  @After
+  public void unfreezeTime() {
+    DateTimeUtils.setCurrentMillisSystem();
+  }
 
   ScheduleConfigurationCoercion coercion = new ScheduleConfigurationCoercion();
 
@@ -51,7 +67,7 @@ public class ScheduleConfigurationCoercionTest {
 
   @Test
   public void daily() {
-    assertThatSchedule("every day at 3 hours past").hasPeriod(1).days();
+    assertThatSchedule("every day at 3 hours past").hasPeriod(24).hours().startingAfter(3);
   }
 
   @Ignore("Not done yet")
@@ -64,16 +80,16 @@ public class ScheduleConfigurationCoercionTest {
 
   @Test
   public void hourly() {
-    assertThatSchedule("every hour at 15 minutes past").hasPeriod(1).hours();
-    assertThatSchedule("every 3 hours starting at 1 hours past").hasPeriod(3).hours();
-    assertThatSchedule("every 3 hours starting at 2 hours past").hasPeriod(3).hours();
-    assertThatSchedule("every 3 hours starting at 30 minutes past").hasPeriod(3).hours();
+    assertThatSchedule("every hour at 15 minutes past").hasPeriod(60).minutes().startingAfter(15);
+    assertThatSchedule("every 3 hours starting at 1 hours past").hasPeriod(180).minutes().startingAfter(60);
+    assertThatSchedule("every 3 hours starting at 2 hours past").hasPeriod(180).minutes().startingAfter(120);
+    assertThatSchedule("every 3 hours starting at 30 minutes past").hasPeriod(180).minutes().startingAfter(30);
   }
 
   @Test
   public void minutely() {
-    assertThatSchedule("every 15 minutes starting at 5 minutes past").hasPeriod(15).minutes();
-    assertThatSchedule("every 15 minutes starting at 5 seconds past").hasPeriod(15).minutes();
+    assertThatSchedule("every 15 minutes starting at 5 minutes past").hasPeriod(15 * 60).seconds().startingAfter(5 * 60);
+    assertThatSchedule("every 15 minutes starting at 5 seconds past").hasPeriod(15 * 60).seconds().startingAfter(5);
   }
 
   private ScheduleConfiguration target() {

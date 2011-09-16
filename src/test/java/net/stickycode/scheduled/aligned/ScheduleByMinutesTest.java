@@ -14,10 +14,13 @@ package net.stickycode.scheduled.aligned;
 
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static net.stickycode.fest.ScheduleAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
+import net.stickycode.fest.ScheduleAssert;
+import net.stickycode.scheduled.Schedule;
 import net.stickycode.scheduled.aligned.AlignedPeriodicSchedule;
 import net.stickycode.scheduled.aligned.AlignmentMustBeLessThanPeriodException;
 
@@ -57,12 +60,12 @@ public class ScheduleByMinutesTest {
     // 5 seconds past
     // delay is 30 seconds
     // next run is 25 seconds
-    assertThat(delay(30, SECONDS, 1, MINUTES)).isEqualTo(25);
+    assertThat(delay(30, SECONDS, 1, MINUTES)).hasPeriod(60).seconds().startingAfter(25);
   }
 
   @Test
   public void offsetIsSameUnitAsPeriod() {
-    assertThat(delay(3 * 60, SECONDS, 10, MINUTES)).isEqualTo(175);
+    assertThat(delay(3 * 60, SECONDS, 10, MINUTES)).hasPeriod(10 * 60).seconds().startingAfter(175);
   }
 
   @Test
@@ -70,10 +73,15 @@ public class ScheduleByMinutesTest {
     // 5 seconds past
     // delay is 2 seconds
     // next run is 55 + 2 == 57
-    assertThat(delay(2, SECONDS, 1, MINUTES)).isEqualTo(57);
+    assertThat(delay(2, SECONDS, 1, MINUTES)).hasPeriod(60).seconds().startingAfter(57);
+  }
+  
+  @Test 
+  public void stringify() {
+    assertThat(new AlignedPeriodicSchedule(10, MINUTES, 1, TimeUnit.HOURS).toString()).isEqualTo("with period 60 minutes starting in 10 minutes");
   }
 
-  private long delay(long alignment, TimeUnit minutes, long period, TimeUnit hours) {
-    return new AlignedPeriodicSchedule(alignment, minutes, period, hours).getInitialDelay();
+  private Schedule delay(long alignment, TimeUnit minutes, long period, TimeUnit hours) {
+    return new AlignedPeriodicSchedule(alignment, minutes, period, hours);
   }
 }

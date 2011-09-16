@@ -40,6 +40,16 @@ public class AlignedPeriodicSchedule
     this.alignmentUnit = alignmentUnit;
   }
 
+  @Override
+  public long getPeriod() {
+    return alignmentUnit.convert(super.getPeriod(), super.getUnits());
+  }
+  
+  @Override
+  public TimeUnit getUnits() {
+    return alignmentUnit;
+  }
+  
   /**
    * The delay in seconds to wait before the initial execution to align the schedule as specified.
    * <b>An alignment of 0 means there is no delay</b>
@@ -87,8 +97,8 @@ public class AlignedPeriodicSchedule
   @Override
   public String toString() {
     String units = getUnits().toString().toLowerCase();
-    return String.format("with period %i %s starting in %i %s",
+    return String.format("with period %d %s starting in %d %s",
         getPeriod(), units,
-        alignment, units);
+        getInitialDelay(), alignmentUnit.toString().toLowerCase());
   }
 }

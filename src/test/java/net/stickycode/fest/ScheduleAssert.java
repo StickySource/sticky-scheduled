@@ -10,7 +10,7 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
  */
-package net.stickycode.scheduled;
+package net.stickycode.fest;
 
 import java.util.concurrent.TimeUnit;
 
@@ -58,6 +58,16 @@ public class ScheduleAssert
 
   public ScheduleAssert millis() {
     Assertions.assertThat(actual.getUnits()).isEqualTo(TimeUnit.MILLISECONDS);
+    return this;
+  }
+
+  public ScheduleAssert startingAfter(int i) {
+    Assertions.assertThat(actual.getInitialDelay()).isEqualTo(i);
+    return this;
+  }
+
+  public ScheduleAssert delayedByNothing(int i) {
+    Assertions.assertThat(actual.getInitialDelay()).isEqualTo(0);
     return this;
   }
 
