@@ -97,7 +97,7 @@ public class AlignedPeriodicSchedule
   @Override
   public String toString() {
     String units = getUnits().toString().toLowerCase();
-    return String.format("with period %d %s starting in %d %s",
+    return String.format("period %d %s starting in %d %s",
         getPeriod(), units,
         getInitialDelay(), alignmentUnit.toString().toLowerCase());
   }

@@ -70,5 +70,10 @@ public class ScheduleConfiguration
   public Schedule getSchedule() {
     return schedule;
   }
+  
+  @Override
+  public String toString() {
+    return schedule.toString();
+  }
 
 }

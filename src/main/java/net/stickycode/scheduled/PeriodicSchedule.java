@@ -43,7 +43,7 @@ public class PeriodicSchedule
 
   @Override
   public String toString() {
-    return String.format("with period %d %s",
+    return String.format("period %d %s",
         period, periodUnit.toString().toLowerCase());
   }
 }

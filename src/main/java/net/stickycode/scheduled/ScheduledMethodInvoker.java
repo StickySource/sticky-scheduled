@@ -40,9 +40,11 @@ public class ScheduledMethodInvoker
   @Override
   public void run() {
     try {
+      log.debug("invoking {} using {}", this, schedule);
       method.invoke(target, new Object[0]);
     }
     catch (IllegalArgumentException e) {
+      // means we are invoking the method incorrectly which should not be possible 
       throw new ThisShouldNeverHappenException(e, 
           "{}. Failed to invoke the scheduled method {} on class {}", 
           e.getMessage(), toString(), target.getClass().getName());
