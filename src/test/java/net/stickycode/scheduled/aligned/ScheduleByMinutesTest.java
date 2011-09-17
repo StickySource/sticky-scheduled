@@ -20,6 +20,7 @@ import static org.fest.assertions.Assertions.assertThat;
 import java.util.concurrent.TimeUnit;
 
 import net.stickycode.fest.ScheduleAssert;
+import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
 import net.stickycode.scheduled.aligned.AlignedPeriodicSchedule;
 import net.stickycode.scheduled.aligned.AlignmentMustBeLessThanPeriodException;
@@ -78,7 +79,8 @@ public class ScheduleByMinutesTest {
   
   @Test 
   public void stringify() {
-    assertThat(new AlignedPeriodicSchedule(10, MINUTES, 1, TimeUnit.HOURS).toString()).isEqualTo("with period 60 minutes starting in 10 minutes");
+    assertThat(new AlignedPeriodicSchedule(10, MINUTES, 1, TimeUnit.HOURS).toString()).isEqualTo("period 60 minutes starting in 10 minutes");
+    assertThat(new PeriodicSchedule(1, TimeUnit.HOURS).toString()).isEqualTo("period 1 hours");
   }
 
   private Schedule delay(long alignment, TimeUnit minutes, long period, TimeUnit hours) {

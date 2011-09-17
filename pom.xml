@@ -10,7 +10,7 @@
 
 	<groupId>net.stickycode.scheduled</groupId>
 	<artifactId>sticky-scheduled</artifactId>
-	<version>1.4-SNAPSHOT</version>
+	<version>1.4</version>
 	<packaging>jar</packaging>
 
 	<name>sticky-scheduled</name>
@@ -47,4 +47,10 @@
 			<version>[1.5,2)</version>
 		</dependency>
 	</dependencies>
+
+  <scm>
+    <connection>scm:svn:http://stickycode.googlecode.com/svn/tags/net.stickycode.scheduled/sticky-scheduled-1.4</connection>
+    <developerConnection>scm:svn:https://stickycode.googlecode.com/svn/tags/net.stickycode.scheduled/sticky-scheduled-1.4</developerConnection>
+    <url>http://code.google.com/p/stickycode/source/browse/#svn/tags/net.stickycode.scheduled/sticky-scheduled-1.4</url>
+  </scm>
 </project>
