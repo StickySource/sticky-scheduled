@@ -73,7 +73,10 @@ public class ScheduleConfiguration
   
   @Override
   public String toString() {
-    return schedule.toString();
+    if (schedule == null)
+      return name + " with undefined schedule";
+    
+    return name + " with " + schedule.toString();
   }
 
 }
