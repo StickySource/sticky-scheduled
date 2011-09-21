@@ -22,9 +22,9 @@ import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
 import net.stickycode.scheduled.ScheduleConfiguration;
-import net.stickycode.stereotype.component.StickyMapper;
+import net.stickycode.stereotype.StickyPlugin;
 
-@StickyMapper
+@StickyPlugin
 public class ScheduleConfigurationCoercion
     implements Coercion<Schedule> {
   
