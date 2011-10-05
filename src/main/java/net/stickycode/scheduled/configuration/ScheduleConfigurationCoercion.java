@@ -26,7 +26,6 @@ import net.stickycode.stereotype.StickyFramework;
 import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
-@StickyFramework
 public class ScheduleConfigurationCoercion
     implements Coercion<Schedule> {
   
