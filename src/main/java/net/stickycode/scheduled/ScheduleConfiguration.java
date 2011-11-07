@@ -38,13 +38,17 @@ public class ScheduleConfiguration
 
   @Override
   public Class<?> getComponentType() {
-    // XXX document parent that this only needs to be set if getType returns an array or parameterized type
-    return null;
+    throw new UnsupportedOperationException("Scheduling has no components");
   }
 
   @Override
   public CoercionTarget getComponentCoercionType() {
-    return null;
+    throw new UnsupportedOperationException("Scheduling has no component type to coerce");
+  }
+  
+  @Override
+  public CoercionTarget[] getComponentCoercionTypes() {
+    throw new UnsupportedOperationException("Scheduling has no component targets");
   }
 
   @Override
@@ -54,7 +58,7 @@ public class ScheduleConfiguration
 
   @Override
   public Object getDefaultValue() {
-    return null;
+    throw new UnsupportedOperationException("Scheduling cannot have a default value");
   }
 
   @Override
