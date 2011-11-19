@@ -12,14 +12,18 @@
  */
 package net.stickycode.scheduled;
 
+import java.lang.reflect.ParameterizedType;
+
+import net.stickycode.coercion.AbstractCoercionType;
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.configured.ConfigurationAttribute;
 
-
 public class ScheduleConfiguration
+    extends AbstractCoercionType
     implements ConfigurationAttribute {
-  
+
   private Schedule schedule;
+
   private final String name;
 
   public ScheduleConfiguration(String name) {
@@ -42,12 +46,12 @@ public class ScheduleConfiguration
   }
 
   @Override
-  public CoercionTarget getComponentCoercionType() {
+  public AbstractCoercionType getComponentCoercionType() {
     throw new UnsupportedOperationException("Scheduling has no component type to coerce");
   }
-  
+
   @Override
-  public CoercionTarget[] getComponentCoercionTypes() {
+  public AbstractCoercionType[] getComponentCoercionTypes() {
     throw new UnsupportedOperationException("Scheduling has no component targets");
   }
 
@@ -63,7 +67,7 @@ public class ScheduleConfiguration
 
   @Override
   public void setValue(Object value) {
-    this.schedule = (Schedule)value;
+    this.schedule = (Schedule) value;
   }
 
   @Override
@@ -74,13 +78,23 @@ public class ScheduleConfiguration
   public Schedule getSchedule() {
     return schedule;
   }
-  
+
   @Override
   public String toString() {
     if (schedule == null)
       return name + " with undefined schedule";
-    
+
     return name + " with " + schedule.toString();
+  }
+
+  @Override
+  public boolean isGenericType() {
+    return false;
+  }
+
+  @Override
+  public ParameterizedType getGenericType() {
+    throw new UnsupportedOperationException("Schedule configurations are not generic");
   }
 
 }
