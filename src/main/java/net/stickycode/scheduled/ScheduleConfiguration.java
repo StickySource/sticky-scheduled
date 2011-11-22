@@ -15,7 +15,6 @@ package net.stickycode.scheduled;
 import java.lang.reflect.ParameterizedType;
 
 import net.stickycode.coercion.AbstractCoercionType;
-import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.configured.ConfigurationAttribute;
 
 public class ScheduleConfiguration
@@ -95,6 +94,11 @@ public class ScheduleConfiguration
   @Override
   public ParameterizedType getGenericType() {
     throw new UnsupportedOperationException("Schedule configurations are not generic");
+  }
+
+  @Override
+  public Object getValue() {
+    return schedule.toString();
   }
 
 }
