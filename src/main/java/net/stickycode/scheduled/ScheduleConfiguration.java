@@ -96,9 +96,4 @@ public class ScheduleConfiguration
     throw new UnsupportedOperationException("Schedule configurations are not generic");
   }
 
-  @Override
-  public Object getValue() {
-    return schedule.toString();
-  }
-
 }
