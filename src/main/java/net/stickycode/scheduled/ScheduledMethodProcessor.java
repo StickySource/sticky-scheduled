@@ -13,36 +13,83 @@
 package net.stickycode.scheduled;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 import net.stickycode.configured.ConfiguredConfiguration;
-import net.stickycode.reflector.AnnotatedMethodProcessor;
-import net.stickycode.stereotype.Scheduled;
+import net.stickycode.reflector.MethodProcessor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ScheduledMethodProcessor
-    extends AnnotatedMethodProcessor {
+    implements MethodProcessor {
 
   private Logger log = LoggerFactory.getLogger(ScheduledMethodProcessor.class);
 
-  private final ScheduledRunnableRepository schedulingSystem;
+  private ScheduledRunnableRepository schedulingSystem;
 
-  private final ConfiguredConfiguration scheduleConfiguration;
+  private ConfiguredConfiguration scheduleConfiguration;
 
-  public ScheduledMethodProcessor(ScheduledRunnableRepository scheduleRepository, ConfiguredConfiguration configurationOfBeanSchedules) {
-    super(Scheduled.class);
+  private List<ScheduledMethodInvokerFactory> methodInvokerFactories = new ArrayList<ScheduledMethodInvokerFactory>();
+
+  public ScheduledMethodProcessor() {
+  }
+
+  @Deprecated
+  public ScheduledMethodProcessor(ScheduledRunnableRepository scheduleRepository,
+      ConfiguredConfiguration configurationOfBeanSchedules) {
     this.schedulingSystem = scheduleRepository;
     this.scheduleConfiguration = configurationOfBeanSchedules;
+    this.methodInvokerFactories.add(new SimpleScheduledInvokerFactory());
   }
 
   @Override
   public void processMethod(Object target, Method method) {
     ScheduleConfiguration schedule = new ScheduleConfiguration(method.getName());
+    ScheduledRunnable scheduledMethodInvoker = createScheduledMethodInvoker(target, method, schedule);
     scheduleConfiguration.addAttribute(schedule);
-    ScheduledMethodInvoker scheduledMethodInvoker = new ScheduledMethodInvoker(method, target, schedule);
     log.debug("Found {} to register for scheduling", scheduledMethodInvoker);
     schedulingSystem.schedule(scheduledMethodInvoker);
+  }
+
+  private ScheduledRunnable createScheduledMethodInvoker(Object target, Method method, ScheduleConfiguration schedule) {
+    for (ScheduledMethodInvokerFactory factory : methodInvokerFactories) {
+      if (factory.canInvoke(method))
+        return factory.create(target, method, schedule.getSchedule());
+    }
+
+    throw new FactoryNotRegisteredToProcessMethodException(target, method, methodInvokerFactories);
+  }
+
+  public ScheduledMethodProcessor withInvokers(Set<ScheduledMethodInvokerFactory> factories) {
+    methodInvokerFactories.addAll(factories);
+    return this;
+  }
+
+  @Override
+  public boolean canProcess(Method method) {
+    for (ScheduledMethodInvokerFactory factory : methodInvokerFactories) {
+      if (factory.canInvoke(method))
+        return true;
+    }
+
+    return false;
+  }
+
+  @Override
+  public void sort(List<Method> methods) {
+  }
+
+  public ScheduledMethodProcessor withSchedulingSystem(ScheduledRunnableRepository schedulingSystem) {
+    this.schedulingSystem = schedulingSystem;
+    return this;
+  }
+
+  public ScheduledMethodProcessor withConfiguration(ConfiguredConfiguration configuration) {
+    this.scheduleConfiguration = configuration;
+    return this;
   }
 
 }
