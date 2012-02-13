@@ -29,9 +29,9 @@ public class ScheduledMethodInvoker
 
   private final Object target;
   
-  private final ScheduleConfiguration schedule;
+  private final Schedule schedule;
 
-  public ScheduledMethodInvoker(Method method, Object target, ScheduleConfiguration schedule) {
+  public ScheduledMethodInvoker(Method method, Object target, Schedule schedule) {
     this.method = method;
     this.target = target;
     this.schedule = schedule;
@@ -67,7 +67,7 @@ public class ScheduledMethodInvoker
 
   @Override
   public Schedule getSchedule() {
-    return schedule.getSchedule();
+    return schedule;
   }
 
 }

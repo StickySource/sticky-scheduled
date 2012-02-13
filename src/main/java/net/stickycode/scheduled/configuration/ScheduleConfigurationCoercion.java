@@ -16,8 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 
-import net.stickycode.coercion.AbstractFailedToCoerceValueException;
-import net.stickycode.coercion.Coercion;
+import net.stickycode.coercion.AbstractNoDefaultCoercion;
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
@@ -26,21 +25,21 @@ import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
 public class ScheduleConfigurationCoercion
-    implements Coercion<Schedule> {
-  
+    extends AbstractNoDefaultCoercion<Schedule> {
+
   private List<ScheduleParser> parsers = Arrays.asList(new PeriodicScheduleParser(), new AlignedPeriodicScheduleParser());
 
   @Override
-  public Schedule coerce(CoercionTarget type, String value) throws AbstractFailedToCoerceValueException {
+  public Schedule coerce(CoercionTarget type, String value) {
     if (value.length() == 0)
       throw new ScheduleMustBeDefinedButTheValueWasBlankException(type);
-    
+
     for (ScheduleParser parser : parsers) {
       Matcher matcher = parser.matches(value);
       if (matcher.matches())
         return parser.parse(matcher);
     }
-    
+
     throw new ScheduleDefintionIsNotValidException(value);
   }
 

@@ -12,14 +12,13 @@
  */
 package net.stickycode.scheduled;
 
-import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.AnnotatedElement;
 
-import net.stickycode.coercion.AbstractCoercionType;
+import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.configured.ConfigurationAttribute;
 
 public class ScheduleConfiguration
-    extends AbstractCoercionType
-    implements ConfigurationAttribute {
+    implements ConfigurationAttribute, CoercionTarget {
 
   private Schedule schedule;
 
@@ -32,26 +31,6 @@ public class ScheduleConfiguration
   @Override
   public Class<?> getType() {
     return PeriodicSchedule.class;
-  }
-
-  @Override
-  public boolean isArray() {
-    return false;
-  }
-
-  @Override
-  public Class<?> getComponentType() {
-    throw new UnsupportedOperationException("Scheduling has no components");
-  }
-
-  @Override
-  public AbstractCoercionType getComponentCoercionType() {
-    throw new UnsupportedOperationException("Scheduling has no component type to coerce");
-  }
-
-  @Override
-  public AbstractCoercionType[] getComponentCoercionTypes() {
-    throw new UnsupportedOperationException("Scheduling has no component targets");
   }
 
   @Override
@@ -69,6 +48,10 @@ public class ScheduleConfiguration
     this.schedule = (Schedule) value;
   }
 
+  public Object getValue() {
+    return this.schedule;
+  }
+  
   @Override
   public String getName() {
     return name;
@@ -87,13 +70,68 @@ public class ScheduleConfiguration
   }
 
   @Override
-  public boolean isGenericType() {
+  public boolean isArray() {
     return false;
   }
 
   @Override
-  public ParameterizedType getGenericType() {
-    throw new UnsupportedOperationException("Schedule configurations are not generic");
+  public boolean hasComponents() {
+    return false;
+  }
+
+  @Override
+  public CoercionTarget[] getComponentCoercionTypes() {
+    throw new UnsupportedOperationException("Schedule configurations have no components");
+  }
+
+  @Override
+  public boolean isPrimitive() {
+    return false;
+  }
+
+  @Override
+  public Class<?> boxedType() {
+    throw new UnsupportedOperationException("Schedule configurations are not primitive and as such cannot be boxed");
+  }
+
+  @Override
+  public CoercionTarget getCoercionTarget() {
+    return this;
+  }
+
+  @Override
+  public boolean canBeAnnotated() {
+    return false;
+  }
+
+  @Override
+  public AnnotatedElement getAnnotatedElement() {
+    return null;
+  }
+
+  @Override
+  public Class<?> getOwner() {
+    return null;
+  }
+
+  @Override
+  public CoercionTarget getParent() {
+    return null;
+  }
+
+  @Override
+  public boolean hasParent() {
+    return false;
+  }
+
+  @Override
+  public boolean canBeUpdated() {
+    return true;
+  }
+
+  @Override
+  public boolean hasValue() {
+    return schedule != null;
   }
 
 }

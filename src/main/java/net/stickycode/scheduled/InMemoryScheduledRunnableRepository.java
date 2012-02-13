@@ -16,11 +16,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import net.stickycode.stereotype.StickyFramework;
 import net.stickycode.stereotype.component.StickyRepository;
 
 @StickyRepository
-@StickyFramework
 public class InMemoryScheduledRunnableRepository
     implements ScheduledRunnableRepository {
 

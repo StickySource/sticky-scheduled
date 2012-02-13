@@ -13,7 +13,7 @@
 package net.stickycode.scheduled.configuration;
 
 import static org.fest.assertions.Assertions.assertThat;
-import net.stickycode.coercion.CoercionType;
+import net.stickycode.coercion.target.CoercionTargets;
 import net.stickycode.fest.ScheduleAssert;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
@@ -47,9 +47,9 @@ public class ScheduleConfigurationCoercionTest {
 
   @Test
   public void applicability() {
-    assertThat(coercion.isApplicableTo(new CoercionType(Integer.class))).isFalse();
-    assertThat(coercion.isApplicableTo(new CoercionType(ScheduleConfiguration.class))).isTrue();
-    assertThat(coercion.isApplicableTo(new CoercionType(PeriodicSchedule.class))).isTrue();
+    assertThat(coercion.isApplicableTo(CoercionTargets.find(Integer.class))).isFalse();
+    assertThat(coercion.isApplicableTo(CoercionTargets.find(ScheduleConfiguration.class))).isTrue();
+    assertThat(coercion.isApplicableTo(CoercionTargets.find(PeriodicSchedule.class))).isTrue();
   }
 
   @Test(expected = ScheduleMustBeDefinedButTheValueWasBlankException.class)

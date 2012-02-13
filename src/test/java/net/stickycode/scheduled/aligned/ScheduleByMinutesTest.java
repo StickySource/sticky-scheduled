@@ -19,11 +19,8 @@ import static org.fest.assertions.Assertions.assertThat;
 
 import java.util.concurrent.TimeUnit;
 
-import net.stickycode.fest.ScheduleAssert;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
-import net.stickycode.scheduled.aligned.AlignedPeriodicSchedule;
-import net.stickycode.scheduled.aligned.AlignmentMustBeLessThanPeriodException;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
