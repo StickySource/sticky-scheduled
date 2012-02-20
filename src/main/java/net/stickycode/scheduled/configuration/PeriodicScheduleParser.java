@@ -33,7 +33,7 @@ public class PeriodicScheduleParser
     long period = parseNumber(match.group(1));
     TimeUnit periodUnit = parseTimeUnit(match.group(2));
     if (TimeUnit.NANOSECONDS.equals(periodUnit))
-      throw new UnsupportedUnitForSchedulingException(periodUnit.toString());
+      throw new UnsupportedUnitForSchedulingException(periodUnit);
 
     return new PeriodicSchedule(period, periodUnit);
   }

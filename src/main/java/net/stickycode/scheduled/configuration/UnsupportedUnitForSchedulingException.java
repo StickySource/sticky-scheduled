@@ -25,7 +25,7 @@ public class UnsupportedUnitForSchedulingException
     super(e, "Scheduling contained unit '{}' which failed to be coerced, expected one of {} excepting NANOSECONDS as they are too unreliable", period, TimeUnit.values());
   }
   
-  public UnsupportedUnitForSchedulingException(String period) {
+  public UnsupportedUnitForSchedulingException(TimeUnit period) {
     super("Scheduling contained unit '{}' which is unsupported, expected one of {} excepting NANOSECONDS as they are too unreliable", period, TimeUnit.values());
   }
 
