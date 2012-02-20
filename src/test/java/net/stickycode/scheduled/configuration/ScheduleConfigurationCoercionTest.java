@@ -13,11 +13,11 @@
 package net.stickycode.scheduled.configuration;
 
 import static org.fest.assertions.Assertions.assertThat;
+import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.coercion.target.CoercionTargets;
 import net.stickycode.fest.ScheduleAssert;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
-import net.stickycode.scheduled.ScheduleConfiguration;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
@@ -48,7 +48,7 @@ public class ScheduleConfigurationCoercionTest {
   @Test
   public void applicability() {
     assertThat(coercion.isApplicableTo(CoercionTargets.find(Integer.class))).isFalse();
-    assertThat(coercion.isApplicableTo(CoercionTargets.find(ScheduleConfiguration.class))).isTrue();
+    assertThat(coercion.isApplicableTo(CoercionTargets.find(Schedule.class))).isTrue();
     assertThat(coercion.isApplicableTo(CoercionTargets.find(PeriodicSchedule.class))).isTrue();
   }
 
@@ -92,7 +92,7 @@ public class ScheduleConfigurationCoercionTest {
     assertThatSchedule("every 15 minutes starting at 5 seconds past").hasPeriod(15 * 60).seconds().startingAfter(5);
   }
 
-  private ScheduleConfiguration target() {
-    return new ScheduleConfiguration("bob");
+  private CoercionTarget target() {
+    return CoercionTargets.find(Schedule.class);
   }
 }

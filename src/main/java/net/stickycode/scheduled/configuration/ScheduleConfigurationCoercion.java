@@ -18,9 +18,7 @@ import java.util.regex.Matcher;
 
 import net.stickycode.coercion.AbstractNoDefaultCoercion;
 import net.stickycode.coercion.CoercionTarget;
-import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
-import net.stickycode.scheduled.ScheduleConfiguration;
 import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
@@ -45,10 +43,7 @@ public class ScheduleConfigurationCoercion
 
   @Override
   public boolean isApplicableTo(CoercionTarget type) {
-    if (type.getType().isAssignableFrom(ScheduleConfiguration.class))
-      return true;
-
-    if (type.getType().isAssignableFrom(PeriodicSchedule.class))
+    if (Schedule.class.isAssignableFrom(type.getType()))
       return true;
 
     return false;

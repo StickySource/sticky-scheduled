@@ -12,12 +12,13 @@
  */
 package net.stickycode.scheduled;
 
+import java.beans.Introspector;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.stickycode.configured.ConfiguredConfiguration;
+import net.stickycode.configured.ConfiguredBeanProcessor;
 import net.stickycode.reflector.MethodProcessor;
 
 import org.slf4j.Logger;
@@ -30,34 +31,26 @@ public class ScheduledMethodProcessor
 
   private ScheduledRunnableRepository schedulingSystem;
 
-  private ConfiguredConfiguration scheduleConfiguration;
+  private ConfiguredBeanProcessor beanProcessor;
 
   private List<ScheduledMethodInvokerFactory> methodInvokerFactories = new ArrayList<ScheduledMethodInvokerFactory>();
 
   public ScheduledMethodProcessor() {
   }
 
-  @Deprecated
-  public ScheduledMethodProcessor(ScheduledRunnableRepository scheduleRepository,
-      ConfiguredConfiguration configurationOfBeanSchedules) {
-    this.schedulingSystem = scheduleRepository;
-    this.scheduleConfiguration = configurationOfBeanSchedules;
-    this.methodInvokerFactories.add(new SimpleScheduledInvokerFactory());
-  }
-
   @Override
   public void processMethod(Object target, Method method) {
-    ScheduleConfiguration schedule = new ScheduleConfiguration(method.getName());
-    ScheduledRunnable scheduledMethodInvoker = createScheduledMethodInvoker(target, method, schedule);
-    scheduleConfiguration.addAttribute(schedule);
+    ScheduledRunnable scheduledMethodInvoker = createScheduledMethodInvoker(target, method);
+    beanProcessor.process(scheduledMethodInvoker,
+        Introspector.decapitalize(target.getClass().getSimpleName()) + "." + method.getName(), null);
     log.debug("Found {} to register for scheduling", scheduledMethodInvoker);
     schedulingSystem.schedule(scheduledMethodInvoker);
   }
 
-  private ScheduledRunnable createScheduledMethodInvoker(Object target, Method method, ScheduleConfiguration schedule) {
+  private ScheduledRunnable createScheduledMethodInvoker(Object target, Method method) {
     for (ScheduledMethodInvokerFactory factory : methodInvokerFactories) {
       if (factory.canInvoke(method))
-        return factory.create(target, method, schedule.getSchedule());
+        return factory.create(target, method);
     }
 
     throw new FactoryNotRegisteredToProcessMethodException(target, method, methodInvokerFactories);
@@ -87,8 +80,8 @@ public class ScheduledMethodProcessor
     return this;
   }
 
-  public ScheduledMethodProcessor withConfiguration(ConfiguredConfiguration configuration) {
-    this.scheduleConfiguration = configuration;
+  public ScheduledMethodProcessor withConfiguration(ConfiguredBeanProcessor configuration) {
+    this.beanProcessor = configuration;
     return this;
   }
 

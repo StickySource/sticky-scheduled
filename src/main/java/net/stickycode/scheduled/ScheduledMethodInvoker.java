@@ -16,6 +16,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import net.stickycode.exception.TransientException;
+import net.stickycode.stereotype.Configured;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,18 +30,20 @@ public class ScheduledMethodInvoker
 
   private final Object target;
   
-  private final Schedule schedule;
+  @Configured
+  private Schedule schedule;
 
-  public ScheduledMethodInvoker(Method method, Object target, Schedule schedule) {
+  public ScheduledMethodInvoker(Method method, Object target) {
     this.method = method;
     this.target = target;
-    this.schedule = schedule;
   }
 
   @Override
   public void run() {
     try {
       log.debug("invoking {} using {}", this, schedule);
+      // TODO need a means of cancelling the call if it take too long
+      // cancel method? or invoke it async and return an handler?
       method.invoke(target, new Object[0]);
     }
     catch (IllegalArgumentException e) {
@@ -53,6 +56,7 @@ public class ScheduledMethodInvoker
       throw new RuntimeException(e);
     }
     catch (InvocationTargetException e) {
+      // TODO this needs to more cleanly defined
       if (e.getCause() instanceof TransientException)
         log.error("Failed to execute {}", this, e);
       else

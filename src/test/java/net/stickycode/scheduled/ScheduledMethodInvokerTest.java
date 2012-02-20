@@ -72,7 +72,7 @@ public class ScheduledMethodInvokerTest {
   }
 
   private void run(Method m) {
-    ScheduledMethodInvoker scheduledMethodInvoker = new ScheduledMethodInvoker(m, runIt, null);
+    ScheduledMethodInvoker scheduledMethodInvoker = new ScheduledMethodInvoker(m, runIt);
     scheduledMethodInvoker.run();
   }
 }
