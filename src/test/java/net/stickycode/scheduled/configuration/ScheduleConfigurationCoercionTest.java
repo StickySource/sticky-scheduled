@@ -43,7 +43,7 @@ public class ScheduleConfigurationCoercionTest {
     DateTimeUtils.setCurrentMillisSystem();
   }
 
-  ScheduleConfigurationCoercion coercion = new ScheduleConfigurationCoercion();
+  ScheduleCoercion coercion = new ScheduleCoercion();
 
   @Test
   public void applicability() {

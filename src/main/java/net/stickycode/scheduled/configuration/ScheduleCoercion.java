@@ -22,7 +22,7 @@ import net.stickycode.scheduled.Schedule;
 import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
-public class ScheduleConfigurationCoercion
+public class ScheduleCoercion
     extends AbstractNoDefaultCoercion<Schedule> {
 
   private List<ScheduleParser> parsers = Arrays.asList(new PeriodicScheduleParser(), new AlignedPeriodicScheduleParser());
