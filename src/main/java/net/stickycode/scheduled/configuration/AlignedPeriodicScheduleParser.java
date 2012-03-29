@@ -19,7 +19,9 @@ import java.util.regex.Pattern;
 import net.stickycode.scheduled.Schedule;
 import net.stickycode.scheduled.aligned.AlignedPeriodicSchedule;
 import net.stickycode.scheduled.aligned.AlignmentCannotBeLessThanPeriodUnitsException;
+import net.stickycode.stereotype.StickyPlugin;
 
+@StickyPlugin
 public class AlignedPeriodicScheduleParser
     extends ScheduleParser {
 

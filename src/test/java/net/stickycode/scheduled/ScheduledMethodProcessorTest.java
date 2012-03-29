@@ -14,7 +14,6 @@ package net.stickycode.scheduled;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
@@ -24,7 +23,6 @@ import java.util.Set;
 
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.configured.ConfiguredBeanProcessor;
-import net.stickycode.configured.ConfiguredConfiguration;
 import net.stickycode.stereotype.Scheduled;
 
 import org.junit.Test;

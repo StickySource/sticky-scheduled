@@ -12,9 +12,10 @@
  */
 package net.stickycode.scheduled.configuration;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.Set;
 import java.util.regex.Matcher;
+
+import javax.inject.Inject;
 
 import net.stickycode.coercion.AbstractNoDefaultCoercion;
 import net.stickycode.coercion.CoercionTarget;
@@ -25,7 +26,8 @@ import net.stickycode.stereotype.StickyPlugin;
 public class ScheduleCoercion
     extends AbstractNoDefaultCoercion<Schedule> {
 
-  private List<ScheduleParser> parsers = Arrays.asList(new PeriodicScheduleParser(), new AlignedPeriodicScheduleParser());
+  @Inject
+  private Set<ScheduleParser> parsers;
 
   @Override
   public Schedule coerce(CoercionTarget type, String value) {

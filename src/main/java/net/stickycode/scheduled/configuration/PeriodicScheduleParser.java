@@ -18,7 +18,9 @@ import java.util.regex.Pattern;
 
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
+import net.stickycode.stereotype.StickyPlugin;
 
+@StickyPlugin
 public class PeriodicScheduleParser
     extends ScheduleParser {
 

@@ -13,6 +13,11 @@
 package net.stickycode.scheduled.configuration;
 
 import static org.fest.assertions.Assertions.assertThat;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.coercion.target.CoercionTargets;
 import net.stickycode.fest.ScheduleAssert;
@@ -26,6 +31,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -43,6 +50,10 @@ public class ScheduleConfigurationCoercionTest {
     DateTimeUtils.setCurrentMillisSystem();
   }
 
+  @Spy
+  Set<ScheduleParser> parsers = new HashSet<ScheduleParser>(Arrays.asList(new PeriodicScheduleParser(), new AlignedPeriodicScheduleParser()));
+  
+  @InjectMocks
   ScheduleCoercion coercion = new ScheduleCoercion();
 
   @Test
