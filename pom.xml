@@ -39,7 +39,7 @@
 		<dependency>
 			<groupId>net.stickycode.configured</groupId>
 			<artifactId>sticky-configured</artifactId>
-			<version>[4.5,5)</version>
+			<version>[4.7,5)</version>
 		</dependency>
 		<dependency>
 			<groupId>net.stickycode</groupId>

@@ -1,24 +1,29 @@
 package net.stickycode.scheduled.configuration;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import net.stickycode.scheduled.Schedule;
+import net.stickycode.scheduled.ScheduleParser;
 import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
 public class DisabledScheduleParser
-    extends ScheduleParser {
-
-  private Pattern disabled = Pattern.compile("^off|disabled|never$", Pattern.CASE_INSENSITIVE);
+    implements ScheduleParser {
 
   @Override
-  protected Pattern getPattern() {
-    return disabled;
+  public boolean matches(String specification) {
+    if ("off".equalsIgnoreCase(specification))
+      return true;
+
+    if ("disabled".equalsIgnoreCase(specification))
+      return true;
+
+    if ("never".equalsIgnoreCase(specification))
+      return true;
+
+    return false;
   }
 
   @Override
-  Schedule parse(Matcher matched) {
+  public Schedule parse(String specification) {
     return new DisabledSchedule();
   }
 

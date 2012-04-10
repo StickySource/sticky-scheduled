@@ -23,6 +23,8 @@ import net.stickycode.coercion.target.CoercionTargets;
 import net.stickycode.fest.ScheduleAssert;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
+import net.stickycode.scheduled.ScheduleParser;
+import net.stickycode.scheduled.aligned.AlignedPeriodicScheduleParser;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;

@@ -16,9 +16,6 @@ import net.stickycode.stereotype.StickyFramework;
 @StickyFramework
 public class ScheduledBeanProcessor {
 
-//  @Inject
-//  private ConfigurationRepository configurationRepository;
-
   @Inject
   private ScheduledRunnableRepository scheduledRunnableRepository;
 
@@ -47,9 +44,6 @@ public class ScheduledBeanProcessor {
   }
 
   public void process(Object instance) {
-//    ConfiguredConfiguration configuration = new ConfiguredConfiguration(instance, Introspector.decapitalize(instance.getClass()
-//        .getSimpleName()));
-
     ScheduledMethodProcessor scheduledMethodProcessor = new ScheduledMethodProcessor()
         .withInvokers(invokerFactories)
         .withSchedulingSystem(scheduledRunnableRepository)

@@ -10,29 +10,34 @@
  * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the Apache License Version 2.0 for the specific language governing permissions and limitations there under.
  */
-package net.stickycode.scheduled.configuration;
+package net.stickycode.scheduled.aligned;
 
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.stickycode.scheduled.Schedule;
-import net.stickycode.scheduled.aligned.AlignedPeriodicSchedule;
-import net.stickycode.scheduled.aligned.AlignmentCannotBeLessThanPeriodUnitsException;
+import net.stickycode.scheduled.configuration.AbstractScheduleParser;
+import net.stickycode.scheduled.configuration.UnsupportedUnitForSchedulingException;
 import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
 public class AlignedPeriodicScheduleParser
-    extends ScheduleParser {
+    extends AbstractScheduleParser {
 
   private Pattern alignedPeriodic = Pattern.compile("every ([0-9]+)? ?([a-zA-Z]+)(?: starting)? at ([0-9]+) ([a-zA-Z]+) past");
 
-  protected Pattern getPattern() {
-    return alignedPeriodic;
-  }
-  
   @Override
-  public Schedule parse(Matcher match) {
+  public boolean matches(String specification) {
+    return alignedPeriodic.matcher(specification).matches();
+  }
+
+  @Override
+  public Schedule parse(String specification) {
+    Matcher match = alignedPeriodic.matcher(specification);
+    if (!match.matches())
+      throw new IllegalStateException("The schedule specification must match if matches was called"); 
+      
     long period = parseNumber(match.group(1));
     TimeUnit periodUnit = parseTimeUnit(match.group(2));
     if (TimeUnit.NANOSECONDS.equals(periodUnit))

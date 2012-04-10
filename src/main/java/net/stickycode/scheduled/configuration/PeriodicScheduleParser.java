@@ -22,16 +22,21 @@ import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
 public class PeriodicScheduleParser
-    extends ScheduleParser {
+    extends AbstractScheduleParser {
 
   private Pattern periodic = Pattern.compile("every ([0-9]+)? ?([a-zA-Z]+)$");
 
-  protected Pattern getPattern() {
-    return periodic;
+  @Override
+  public boolean matches(String specification) {
+    return periodic.matcher(specification).matches();
   }
 
   @Override
-  public Schedule parse(Matcher match) {
+  public Schedule parse(String specification) {
+    Matcher match = periodic.matcher(specification);
+    if (!match.matches())
+      throw new IllegalStateException("The schedule specification must match if matches was called"); 
+
     long period = parseNumber(match.group(1));
     TimeUnit periodUnit = parseTimeUnit(match.group(2));
     if (TimeUnit.NANOSECONDS.equals(periodUnit))

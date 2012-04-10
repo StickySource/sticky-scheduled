@@ -14,25 +14,16 @@ package net.stickycode.scheduled.configuration;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import net.stickycode.scheduled.Schedule;
+import net.stickycode.scheduled.ScheduleParser;
 
-public abstract class ScheduleParser {
-
-  public Matcher matches(String value) {
-    return getPattern().matcher(value);
-  }
-  
-  protected abstract Pattern getPattern();
-  
-  abstract Schedule parse(Matcher matched);
+public abstract class AbstractScheduleParser
+    implements ScheduleParser {
 
   protected long parseNumber(String group) {
     if (group == null)
       return 1;
-  
+
     return Long.valueOf(group);
   }
 
@@ -40,7 +31,7 @@ public abstract class ScheduleParser {
     try {
       if (period.endsWith("s") || period.endsWith("S"))
         return TimeUnit.valueOf(period.toUpperCase(Locale.US));
-  
+
       return TimeUnit.valueOf(period.toUpperCase(Locale.US) + "S");
     }
     catch (IllegalArgumentException e) {

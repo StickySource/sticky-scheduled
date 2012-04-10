@@ -13,8 +13,6 @@
 package net.stickycode.scheduled.configuration;
 
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import net.stickycode.scheduled.Schedule;
 
@@ -23,17 +21,18 @@ import org.junit.Test;
 public class ScheduleParserTest {
 
   private final class NoopScheduleParser
-      extends ScheduleParser {
+      extends AbstractScheduleParser {
 
     @Override
-    protected Pattern getPattern() {
-      return null;
+    public boolean matches(String specification) {
+      return false;
     }
 
     @Override
-    Schedule parse(Matcher matched) {
+    public Schedule parse(String specification) {
       return null;
     }
+
   }
 
   @Test(expected = UnsupportedUnitForSchedulingException.class)
@@ -62,7 +61,6 @@ public class ScheduleParserTest {
       parseUnit(unit.name().substring(0, unit.name().length() - 1));
     }
   }
-
 
   private TimeUnit parseUnit(String string) {
     return new NoopScheduleParser().parseTimeUnit(string);

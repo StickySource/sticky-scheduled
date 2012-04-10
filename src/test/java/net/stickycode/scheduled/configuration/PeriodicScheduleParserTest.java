@@ -39,7 +39,7 @@ public class PeriodicScheduleParserTest {
     assertThat(parse("every 45 minutes")).hasPeriod(45).minutes();
     assertThat(parse("every 145 minutes")).hasPeriod(145).minutes();
   }
-  
+
   @Test
   public void seconds() {
     assertThat(parse("every second")).hasPeriod(1).seconds();
@@ -51,9 +51,8 @@ public class PeriodicScheduleParserTest {
 
   private Schedule parse(String string) {
     PeriodicScheduleParser parser = new PeriodicScheduleParser();
-    Matcher matches = parser.matches(string);
-    assertThat(matches.matches()).isTrue();
-    return parser.parse(matches);
+    assertThat(parser.matches(string)).isTrue();
+    return parser.parse(string);
   }
 
 }

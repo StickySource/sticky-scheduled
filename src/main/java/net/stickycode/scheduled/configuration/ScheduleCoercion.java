@@ -13,13 +13,13 @@
 package net.stickycode.scheduled.configuration;
 
 import java.util.Set;
-import java.util.regex.Matcher;
 
 import javax.inject.Inject;
 
 import net.stickycode.coercion.AbstractNoDefaultCoercion;
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.scheduled.Schedule;
+import net.stickycode.scheduled.ScheduleParser;
 import net.stickycode.stereotype.StickyPlugin;
 
 @StickyPlugin
@@ -35,9 +35,8 @@ public class ScheduleCoercion
       throw new ScheduleMustBeDefinedButTheValueWasBlankException(type);
 
     for (ScheduleParser parser : parsers) {
-      Matcher matcher = parser.matches(value);
-      if (matcher.matches())
-        return parser.parse(matcher);
+      if (parser.matches(value))
+        return parser.parse(value);
     }
 
     throw new ScheduleDefintionIsNotValidException(value);
