@@ -14,9 +14,6 @@ package net.stickycode.scheduled.configuration;
 
 import static net.stickycode.fest.ScheduleAssert.assertThat;
 import static org.fest.assertions.Assertions.assertThat;
-
-import java.util.regex.Matcher;
-
 import net.stickycode.scheduled.Schedule;
 
 import org.junit.Test;
