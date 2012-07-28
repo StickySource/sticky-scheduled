@@ -19,15 +19,21 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.lang.reflect.Method;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import net.stickycode.coercion.CoercionTarget;
+import net.stickycode.configured.ConfigurationAttribute;
+import net.stickycode.configured.ConfigurationRepository;
 import net.stickycode.configured.ConfiguredBeanProcessor;
-import net.stickycode.stereotype.Scheduled;
+import net.stickycode.stereotype.scheduled.Scheduled;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -45,31 +51,40 @@ public class ScheduledMethodProcessorTest {
   private ScheduledRunnableRepository schedulingSystem;
 
   @Mock
+  private ConfigurationRepository configurationRepository;
+
+  @Mock
   private ConfiguredBeanProcessor configuration;
+
+  @Spy
+  private Set<ScheduledMethodInvokerFactory> factory = new HashSet<ScheduledMethodInvokerFactory>();
+
+  @InjectMocks
+  private ScheduledMethodProcessor scheduledMethodProcessor = new ScheduledMethodProcessor();
+
+  @Before
+  public void before() {
+    factory.add(new SimpleScheduledInvokerFactory());
+  }
 
   @Test
   public void nothing() {
-    new ScheduledMethodProcessor()
-        .withSchedulingSystem(schedulingSystem)
-        .withConfiguration(configuration);
+    processor();
     verifyZeroInteractions(schedulingSystem, configuration);
+  }
+
+  private ScheduledMethodProcessor processor() {
+    return scheduledMethodProcessor;
   }
 
   @Test
   public void oneSchedule() throws NoSuchMethodException {
     WithASchedule one = new WithASchedule();
     Method m = getMethod("one", one);
-    new ScheduledMethodProcessor()
-        .withSchedulingSystem(schedulingSystem)
-        .withConfiguration(configuration)
-        .withInvokers(singleton(new SimpleScheduledInvokerFactory()))
+    processor()
         .processMethod(one, m);
-    verify(configuration).process(any(WithASchedule.class), eq("withASchedule.one"), eq((CoercionTarget)null));
+    verify(configurationRepository).register(any(ConfigurationAttribute.class));
     verify(schedulingSystem).schedule(any(ScheduledMethodInvoker.class));
-  }
-
-  private Set<ScheduledMethodInvokerFactory> singleton(ScheduledMethodInvokerFactory simple) {
-    return Collections.singleton(simple);
   }
 
   private Method getMethod(String name, Object target, Class<?>... parameters) throws NoSuchMethodException {

@@ -12,37 +12,40 @@
  */
 package net.stickycode.scheduled;
 
-import java.beans.Introspector;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import net.stickycode.configured.ConfiguredBeanProcessor;
+import javax.inject.Inject;
+
+import net.stickycode.configured.ConfigurationRepository;
 import net.stickycode.reflector.MethodProcessor;
+import net.stickycode.stereotype.StickyComponent;
+import net.stickycode.stereotype.StickyFramework;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@StickyComponent
+@StickyFramework
 public class ScheduledMethodProcessor
     implements MethodProcessor {
 
   private Logger log = LoggerFactory.getLogger(ScheduledMethodProcessor.class);
 
+  @Inject
   private ScheduledRunnableRepository schedulingSystem;
 
-  private ConfiguredBeanProcessor beanProcessor;
+  @Inject
+  private ConfigurationRepository repository;
 
-  private List<ScheduledMethodInvokerFactory> methodInvokerFactories = new ArrayList<ScheduledMethodInvokerFactory>();
-
-  public ScheduledMethodProcessor() {
-  }
+  @Inject
+  private Set<ScheduledMethodInvokerFactory> methodInvokerFactories;
 
   @Override
   public void processMethod(Object target, Method method) {
     ScheduledRunnable scheduledMethodInvoker = createScheduledMethodInvoker(target, method);
-    beanProcessor.process(scheduledMethodInvoker,
-        Introspector.decapitalize(target.getClass().getSimpleName()) + "." + method.getName(), null);
+    repository.register(scheduledMethodInvoker);
     log.debug("Found {} to register for scheduling", scheduledMethodInvoker);
     schedulingSystem.schedule(scheduledMethodInvoker);
   }
@@ -54,11 +57,6 @@ public class ScheduledMethodProcessor
     }
 
     throw new FactoryNotRegisteredToProcessMethodException(target, method, methodInvokerFactories);
-  }
-
-  public ScheduledMethodProcessor withInvokers(Set<ScheduledMethodInvokerFactory> factories) {
-    methodInvokerFactories.addAll(factories);
-    return this;
   }
 
   @Override
@@ -73,16 +71,6 @@ public class ScheduledMethodProcessor
 
   @Override
   public void sort(List<Method> methods) {
-  }
-
-  public ScheduledMethodProcessor withSchedulingSystem(ScheduledRunnableRepository schedulingSystem) {
-    this.schedulingSystem = schedulingSystem;
-    return this;
-  }
-
-  public ScheduledMethodProcessor withConfiguration(ConfiguredBeanProcessor configuration) {
-    this.beanProcessor = configuration;
-    return this;
   }
 
 }

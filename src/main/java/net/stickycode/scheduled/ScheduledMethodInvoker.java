@@ -15,8 +15,14 @@ package net.stickycode.scheduled;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
+import net.stickycode.bootstrap.ComponentContainer;
+import net.stickycode.coercion.CoercionFinder;
+import net.stickycode.coercion.CoercionTarget;
+import net.stickycode.configuration.ConfigurationTarget;
+import net.stickycode.configuration.ResolvedConfiguration;
+import net.stickycode.configured.ConfigurationMetadataProcessor;
 import net.stickycode.exception.TransientException;
-import net.stickycode.stereotype.Configured;
+import net.stickycode.stereotype.configured.Configured;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,12 +36,17 @@ public class ScheduledMethodInvoker
 
   private final Object target;
   
+  private ConfigurationTarget name;
+
   @Configured
   private Schedule schedule;
+
+  private ResolvedConfiguration resolution;
 
   public ScheduledMethodInvoker(Method method, Object target) {
     this.method = method;
     this.target = target;
+    this.name = new MethodConfigurationTarget(method);
   }
 
   @Override
@@ -47,9 +58,9 @@ public class ScheduledMethodInvoker
       method.invoke(target, new Object[0]);
     }
     catch (IllegalArgumentException e) {
-      // means we are invoking the method incorrectly which should not be possible 
-      throw new ThisShouldNeverHappenException(e, 
-          "{}. Failed to invoke the scheduled method {} on class {}", 
+      // means we are invoking the method incorrectly which should not be possible
+      throw new ThisShouldNeverHappenException(e,
+          "{}. Failed to invoke the scheduled method {} on class {}",
           e.getMessage(), toString(), target.getClass().getName());
     }
     catch (IllegalAccessException e) {
@@ -66,12 +77,59 @@ public class ScheduledMethodInvoker
 
   @Override
   public String toString() {
-    return method.getDeclaringClass().getSimpleName() + "." + method.getName();
+    return join(".");
   }
 
   @Override
   public Schedule getSchedule() {
     return schedule;
+  }
+
+  @Override
+  public void applyCoercion(CoercionFinder coercions) {
+  }
+
+  @Override
+  public void update() {
+  }
+
+  @Override
+  public void invertControl(ComponentContainer container) {
+  }
+
+  @Override
+  public void resolvedWith(ResolvedConfiguration resolved) {
+    this.resolution = resolved;
+  }
+
+  @Override
+  public ResolvedConfiguration getResolution() {
+    return null;
+  }
+
+  @Override
+  public String join(String delimeter) {
+    return name.join(delimeter);
+  }
+
+  @Override
+  public Object getTarget() {
+    return target;
+  }
+
+  @Override
+  public void recurse(ConfigurationMetadataProcessor processor) {
+    processor.process(name, this);
+  }
+
+  @Override
+  public CoercionTarget getCoercionTarget() {
+    return null;
+  }
+
+  @Override
+  public boolean requiresResolution() {
+    return resolution == null;
   }
 
 }

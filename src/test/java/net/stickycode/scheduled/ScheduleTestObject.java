@@ -12,7 +12,7 @@
  */
 package net.stickycode.scheduled;
 
-import net.stickycode.stereotype.Scheduled;
+import net.stickycode.stereotype.scheduled.Scheduled;
 
 public class ScheduleTestObject {
 

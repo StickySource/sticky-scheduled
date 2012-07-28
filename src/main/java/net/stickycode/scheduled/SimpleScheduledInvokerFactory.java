@@ -2,12 +2,12 @@ package net.stickycode.scheduled;
 
 import java.lang.reflect.Method;
 
+import net.stickycode.stereotype.StickyFramework;
+import net.stickycode.stereotype.plugin.StickyExtension;
+import net.stickycode.stereotype.scheduled.Scheduled;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import net.stickycode.stereotype.Scheduled;
-import net.stickycode.stereotype.StickyFramework;
-import net.stickycode.stereotype.component.StickyExtension;
 
 @StickyExtension
 @StickyFramework

@@ -23,7 +23,10 @@ public class ScheduledBeanProcessor {
   private Set<ScheduledMethodInvokerFactory> invokerFactories;
   
   @Inject
-  ConfiguredBeanProcessor configuredBeanProcessor;
+  private ConfiguredBeanProcessor configuredBeanProcessor;
+  
+  @Inject
+  private ScheduledMethodProcessor scheduledMethodProcessor;
 
   private class Invokable
       implements MethodPredicate {
@@ -44,15 +47,9 @@ public class ScheduledBeanProcessor {
   }
 
   public void process(Object instance) {
-    ScheduledMethodProcessor scheduledMethodProcessor = new ScheduledMethodProcessor()
-        .withInvokers(invokerFactories)
-        .withSchedulingSystem(scheduledRunnableRepository)
-        .withConfiguration(configuredBeanProcessor);
-
     new Reflector()
         .forEachMethod(scheduledMethodProcessor)
         .process(instance);
-
   }
 
 }
