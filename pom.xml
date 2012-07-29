@@ -10,7 +10,7 @@
 
 	<groupId>net.stickycode.scheduled</groupId>
 	<artifactId>sticky-scheduled</artifactId>
-	<version>3.1-SNAPSHOT</version>
+	<version>3.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>sticky-scheduled-3</name>
@@ -21,19 +21,19 @@
 		<dependency>
 			<groupId>net.stickycode</groupId>
 			<artifactId>sticky-testutils</artifactId>
-			<version>[1,2)</version>
+			<version>[1.11,2)</version>
 			<scope>test</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>net.stickycode.scheduled</groupId>
 			<artifactId>sticky-scheduled-api</artifactId>
-			<version>[3,4)</version>
+			<version>[3.1,4)</version>
 		</dependency>
 		<dependency>
 			<groupId>net.stickycode.configured</groupId>
 			<artifactId>sticky-configured</artifactId>
-			<version>[5,6)</version>
+			<version>[5.3,6)</version>
 		</dependency>
 		<dependency>
 			<groupId>net.stickycode</groupId>
