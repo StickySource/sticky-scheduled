@@ -13,16 +13,13 @@
 package net.stickycode.scheduled;
 
 import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 import java.lang.reflect.Method;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.configured.ConfigurationAttribute;
 import net.stickycode.configured.ConfigurationRepository;
 import net.stickycode.configured.ConfiguredBeanProcessor;

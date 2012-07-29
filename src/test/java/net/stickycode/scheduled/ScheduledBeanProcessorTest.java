@@ -13,20 +13,16 @@
 package net.stickycode.scheduled;
 
 import static org.fest.assertions.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.stickycode.configured.ConfigurationAttribute;
 import net.stickycode.configured.ConfigurationRepository;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
-import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.runners.MockitoJUnitRunner;
