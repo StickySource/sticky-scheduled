@@ -20,7 +20,6 @@ import net.stickycode.coercion.CoercionFinder;
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.configuration.ConfigurationTarget;
 import net.stickycode.configuration.ResolvedConfiguration;
-import net.stickycode.configured.ConfigurationMetadataProcessor;
 import net.stickycode.exception.TransientException;
 import net.stickycode.stereotype.configured.Configured;
 
@@ -104,7 +103,7 @@ public class ScheduledMethodInvoker
 
   @Override
   public ResolvedConfiguration getResolution() {
-    return null;
+    return resolution;
   }
 
   @Override
@@ -115,11 +114,6 @@ public class ScheduledMethodInvoker
   @Override
   public Object getTarget() {
     return target;
-  }
-
-  @Override
-  public void recurse(ConfigurationMetadataProcessor processor) {
-    processor.process(name, this);
   }
 
   @Override
