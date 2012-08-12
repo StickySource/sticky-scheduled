@@ -94,6 +94,7 @@ public class ScheduledMethodInvoker
 
   @Override
   public void invertControl(ComponentContainer container) {
+    container.inject(this);
   }
 
   @Override
@@ -123,7 +124,7 @@ public class ScheduledMethodInvoker
 
   @Override
   public boolean requiresResolution() {
-    return resolution == null;
+    return false;
   }
 
 }
