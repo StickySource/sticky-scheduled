@@ -40,7 +40,7 @@ public class PeriodicSchedule
   public TimeUnit getUnits() {
     return periodUnit;
   }
-  
+
   @Override
   public boolean isEnabled() {
     return true;

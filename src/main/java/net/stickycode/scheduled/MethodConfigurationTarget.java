@@ -2,6 +2,8 @@ package net.stickycode.scheduled;
 
 import java.beans.Introspector;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.List;
 
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.configuration.ConfigurationTarget;
@@ -17,8 +19,9 @@ public class MethodConfigurationTarget
   }
 
   @Override
-  public String join(String delimeter) {
-    return Introspector.decapitalize(method.getDeclaringClass().getSimpleName()) + delimeter + method.getName();
+  public List<String> join(String delimeter) {
+    return Collections.singletonList(
+        Introspector.decapitalize(method.getDeclaringClass().getSimpleName()) + delimeter + method.getName());
   }
 
   @Override

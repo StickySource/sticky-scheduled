@@ -15,31 +15,27 @@ package net.stickycode.scheduled.aligned;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static net.stickycode.fest.ScheduleAssert.assertThat;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.StrictAssertions.assertThat;
 
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.Test;
+
+import mockit.Expectations;
 import net.stickycode.scheduled.PeriodicSchedule;
 import net.stickycode.scheduled.Schedule;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-
 public class ScheduleByMinutesTest {
 
-  @Before
-  public void freezeTime() {
-    DateTime now = new DateTime();
-    DateTime midnight = now.minusMillis(now.getMillisOfDay());
-    DateTimeUtils.setCurrentMillisFixed(midnight.plusSeconds(5).getMillis());
-  }
-
-  @After
-  public void unfreezeTime() {
-    DateTimeUtils.setCurrentMillisSystem();
+  public void freezeTimeAtFiveSecondsPastMidnight() {
+    LocalTime now = LocalTime.of(0, 0, 5);
+    new Expectations(LocalTime.class) {
+      {
+        LocalTime.now();
+        result = now;
+      }
+    };
   }
 
   @Test(expected = AlignmentMustBeLessThanPeriodException.class)
@@ -55,7 +51,7 @@ public class ScheduleByMinutesTest {
 
   @Test
   public void offsetIsGreaterThanCurrentTime() {
-    // 5 seconds past
+    freezeTimeAtFiveSecondsPastMidnight();
     // delay is 30 seconds
     // next run is 25 seconds
     assertThat(delay(30, SECONDS, 1, MINUTES)).hasPeriod(60).seconds().startingAfter(25);
@@ -63,20 +59,23 @@ public class ScheduleByMinutesTest {
 
   @Test
   public void offsetIsSameUnitAsPeriod() {
+    freezeTimeAtFiveSecondsPastMidnight();
     assertThat(delay(3 * 60, SECONDS, 10, MINUTES)).hasPeriod(10 * 60).seconds().startingAfter(175);
   }
 
   @Test
   public void offsetIsLessThanCurrentTime() {
-    // 5 seconds past
+    freezeTimeAtFiveSecondsPastMidnight();
     // delay is 2 seconds
     // next run is 55 + 2 == 57
     assertThat(delay(2, SECONDS, 1, MINUTES)).hasPeriod(60).seconds().startingAfter(57);
   }
-  
-  @Test 
+
+  @Test
   public void stringify() {
-    assertThat(new AlignedPeriodicSchedule(10, MINUTES, 1, TimeUnit.HOURS).toString()).isEqualTo("period 60 minutes starting in 10 minutes");
+    freezeTimeAtFiveSecondsPastMidnight();
+    assertThat(new AlignedPeriodicSchedule(10, MINUTES, 1, TimeUnit.HOURS).toString())
+        .isEqualTo("period 60 minutes starting in 10 minutes");
     assertThat(new PeriodicSchedule(1, TimeUnit.HOURS).toString()).isEqualTo("period 1 hours");
   }
 

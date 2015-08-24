@@ -12,39 +12,31 @@
  */
 package net.stickycode.scheduled;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.StrictAssertions.assertThat;
 
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import net.stickycode.configured.ConfigurationRepository;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+import mockit.Injectable;
+import mockit.Tested;
+import mockit.integration.junit4.JMockit;
+
+@RunWith(JMockit.class)
 public class ScheduledBeanProcessorTest {
 
-  @Mock
-  ConfigurationRepository configurations;
+  @Injectable
+  ScheduledMethodProcessor processor;
 
-  @Mock
-  ScheduledRunnableRepository schedulingSystem;
-
-  @Spy
+  @Injectable
   Set<ScheduledMethodInvokerFactory> factories = new HashSet<ScheduledMethodInvokerFactory>(
       Arrays.asList(new SimpleScheduledInvokerFactory()));
 
-  @InjectMocks
-  ScheduledBeanProcessor injector = new ScheduledBeanProcessor();
-
-  @InjectMocks
-  ScheduledMethodProcessor processor = new ScheduledMethodProcessor();
+  @Tested
+  ScheduledBeanProcessor injector;
 
   @Test
   public void scheduled() throws InterruptedException {

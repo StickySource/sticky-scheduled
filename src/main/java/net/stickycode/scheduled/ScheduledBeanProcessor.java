@@ -5,7 +5,6 @@ import java.util.Set;
 
 import javax.inject.Inject;
 
-import net.stickycode.configured.ConfiguredBeanProcessor;
 import net.stickycode.reflector.Reflector;
 import net.stickycode.reflector.predicate.MethodPredicate;
 import net.stickycode.reflector.predicate.PredicateReflector;
@@ -17,14 +16,8 @@ import net.stickycode.stereotype.StickyFramework;
 public class ScheduledBeanProcessor {
 
   @Inject
-  private ScheduledRunnableRepository scheduledRunnableRepository;
-
-  @Inject
   private Set<ScheduledMethodInvokerFactory> invokerFactories;
-  
-  @Inject
-  private ConfiguredBeanProcessor configuredBeanProcessor;
-  
+
   @Inject
   private ScheduledMethodProcessor scheduledMethodProcessor;
 

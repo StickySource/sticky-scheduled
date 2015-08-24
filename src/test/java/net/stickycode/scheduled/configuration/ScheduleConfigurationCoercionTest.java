@@ -12,12 +12,22 @@
  */
 package net.stickycode.scheduled.configuration;
 
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.StrictAssertions.assertThat;
 
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import mockit.Injectable;
+import mockit.NonStrictExpectations;
+import mockit.Tested;
+import mockit.integration.junit4.JMockit;
 import net.stickycode.coercion.CoercionTarget;
 import net.stickycode.coercion.target.CoercionTargets;
 import net.stickycode.fest.ScheduleAssert;
@@ -26,37 +36,24 @@ import net.stickycode.scheduled.Schedule;
 import net.stickycode.scheduled.ScheduleParser;
 import net.stickycode.scheduled.aligned.AlignedPeriodicScheduleParser;
 
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(JMockit.class)
 public class ScheduleConfigurationCoercionTest {
 
+  @Injectable
+  Set<ScheduleParser> parsers = new HashSet<>(Arrays.asList(new PeriodicScheduleParser(), new AlignedPeriodicScheduleParser()));
+
+  @Tested
+  ScheduleCoercion coercion;
+
   @Before
-  public void freezeTime() {
-    DateTime now = new DateTime();
-    DateTime midnight = now.minusMillis(now.getMillisOfDay());
-    DateTimeUtils.setCurrentMillisFixed(midnight.getMillis());
+  public void setup() {
+    new NonStrictExpectations(LocalTime.class) {
+      {
+        LocalTime.now();
+        result = LocalTime.of(0, 0, 0);
+      }
+    };
   }
-
-  @After
-  public void unfreezeTime() {
-    DateTimeUtils.setCurrentMillisSystem();
-  }
-
-  @Spy
-  Set<ScheduleParser> parsers = new HashSet<ScheduleParser>(Arrays.asList(new PeriodicScheduleParser(), new AlignedPeriodicScheduleParser()));
-  
-  @InjectMocks
-  ScheduleCoercion coercion = new ScheduleCoercion();
 
   @Test
   public void applicability() {
@@ -83,8 +80,8 @@ public class ScheduleConfigurationCoercionTest {
     assertThatSchedule("every day at 3 hours past").hasPeriod(24).hours().startingAfter(3);
   }
 
-  @Ignore("Not done yet")
   @Test
+  @Ignore("Not implemented - thinking in tests")
   public void specificDay() {
     assertThatSchedule("every tuesday at 00:15").hasPeriod(7).days();
     assertThatSchedule("every wednesday at 3 hours past midnight").hasPeriod(7).days();
@@ -101,6 +98,7 @@ public class ScheduleConfigurationCoercionTest {
 
   @Test
   public void minutely() {
+    assertThatSchedule("every minute starting at 5 seconds past").hasPeriod(60).seconds().startingAfter(5);
     assertThatSchedule("every 15 minutes starting at 5 minutes past").hasPeriod(15 * 60).seconds().startingAfter(5 * 60);
     assertThatSchedule("every 15 minutes starting at 5 seconds past").hasPeriod(15 * 60).seconds().startingAfter(5);
   }

@@ -36,8 +36,8 @@ public class AlignedPeriodicScheduleParser
   public Schedule parse(String specification) {
     Matcher match = alignedPeriodic.matcher(specification);
     if (!match.matches())
-      throw new IllegalStateException("The schedule specification must match if matches was called"); 
-      
+      throw new IllegalStateException("The schedule specification must match if matches was called");
+
     long period = parseNumber(match.group(1));
     TimeUnit periodUnit = parseTimeUnit(match.group(2));
     if (TimeUnit.NANOSECONDS.equals(periodUnit))

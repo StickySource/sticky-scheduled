@@ -14,6 +14,10 @@ package net.stickycode.scheduled;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.stickycode.bootstrap.ComponentContainer;
 import net.stickycode.coercion.CoercionFinder;
@@ -23,9 +27,6 @@ import net.stickycode.configuration.ResolvedConfiguration;
 import net.stickycode.exception.TransientException;
 import net.stickycode.stereotype.configured.Configured;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ScheduledMethodInvoker
     implements ScheduledRunnable {
 
@@ -34,7 +35,7 @@ public class ScheduledMethodInvoker
   private final Method method;
 
   private final Object target;
-  
+
   private ConfigurationTarget name;
 
   @Configured
@@ -76,7 +77,7 @@ public class ScheduledMethodInvoker
 
   @Override
   public String toString() {
-    return join(".");
+    return join(".").get(0);
   }
 
   @Override
@@ -108,7 +109,7 @@ public class ScheduledMethodInvoker
   }
 
   @Override
-  public String join(String delimeter) {
+  public List<String> join(String delimeter) {
     return name.join(delimeter);
   }
 

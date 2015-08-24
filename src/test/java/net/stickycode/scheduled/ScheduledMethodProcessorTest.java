@@ -12,28 +12,19 @@
  */
 package net.stickycode.scheduled;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
-
 import java.lang.reflect.Method;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.Set;
 
-import net.stickycode.configured.ConfigurationAttribute;
+import org.junit.Test;
+
+import mockit.Expectations;
+import mockit.Injectable;
+import mockit.Tested;
+import mockit.Verifications;
 import net.stickycode.configured.ConfigurationRepository;
-import net.stickycode.configured.ConfiguredBeanProcessor;
 import net.stickycode.stereotype.scheduled.Scheduled;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.runners.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.class)
 public class ScheduledMethodProcessorTest {
 
   static class WithASchedule {
@@ -44,44 +35,38 @@ public class ScheduledMethodProcessorTest {
     }
   }
 
-  @Mock
+  @Injectable
   private ScheduledRunnableRepository schedulingSystem;
 
-  @Mock
-  private ConfigurationRepository configurationRepository;
+  @Injectable
+  ConfigurationRepository configurationRepository;
 
-  @Mock
-  private ConfiguredBeanProcessor configuration;
+  @Injectable
+  private Set<ScheduledMethodInvokerFactory> methodInvokerFactories;
 
-  @Spy
-  private Set<ScheduledMethodInvokerFactory> factory = new HashSet<ScheduledMethodInvokerFactory>();
-
-  @InjectMocks
-  private ScheduledMethodProcessor scheduledMethodProcessor = new ScheduledMethodProcessor();
-
-  @Before
-  public void before() {
-    factory.add(new SimpleScheduledInvokerFactory());
-  }
-
-  @Test
-  public void nothing() {
-    processor();
-    verifyZeroInteractions(schedulingSystem, configuration);
-  }
-
-  private ScheduledMethodProcessor processor() {
-    return scheduledMethodProcessor;
-  }
+  @Tested
+  ScheduledMethodProcessor scheduledMethodProcessor;
 
   @Test
   public void oneSchedule() throws NoSuchMethodException {
+    new Expectations() {
+      {
+        methodInvokerFactories.iterator();
+        result = Collections.singleton(new SimpleScheduledInvokerFactory()).iterator();
+      }
+    };
+
     WithASchedule one = new WithASchedule();
     Method m = getMethod("one", one);
-    processor()
+    scheduledMethodProcessor
         .processMethod(one, m);
-    verify(configurationRepository).register(any(ConfigurationAttribute.class));
-    verify(schedulingSystem).schedule(any(ScheduledMethodInvoker.class));
+
+    new Verifications() {
+      {
+        configurationRepository.register(withNotNull());
+        schedulingSystem.schedule(withNotNull());
+      }
+    };
   }
 
   private Method getMethod(String name, Object target, Class<?>... parameters) throws NoSuchMethodException {

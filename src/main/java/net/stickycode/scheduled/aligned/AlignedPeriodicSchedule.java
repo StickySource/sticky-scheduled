@@ -12,11 +12,11 @@
  */
 package net.stickycode.scheduled.aligned;
 
+import java.time.LocalTime;
+import java.time.temporal.ChronoField;
 import java.util.concurrent.TimeUnit;
 
 import net.stickycode.scheduled.PeriodicSchedule;
-
-import org.joda.time.DateTime;
 
 public class AlignedPeriodicSchedule
     extends PeriodicSchedule {
@@ -44,12 +44,12 @@ public class AlignedPeriodicSchedule
   public long getPeriod() {
     return alignmentUnit.convert(super.getPeriod(), super.getUnits());
   }
-  
+
   @Override
   public TimeUnit getUnits() {
     return alignmentUnit;
   }
-  
+
   /**
    * The delay in seconds to wait before the initial execution to align the schedule as specified.
    * <b>An alignment of 0 means there is no delay</b>
@@ -68,26 +68,26 @@ public class AlignedPeriodicSchedule
     if (alignment == 0)
       return 0;
 
-    DateTime time = new DateTime();
+    LocalTime time = LocalTime.now();
     switch (alignmentUnit) {
     case HOURS:
-      return calculateDelay(time.getHourOfDay(), alignment, 24);
+      return calculateDelay(time.getHour(), alignment, 24);
 
     case MINUTES:
-      return calculateDelay(time.getMinuteOfHour(), alignment, 60);
+      return calculateDelay(time.getMinute(), alignment, 60);
 
     case SECONDS:
-      return calculateDelay(time.getSecondOfMinute(), alignment, 60);
+      return calculateDelay(time.getSecond(), alignment, 60);
 
     case MILLISECONDS:
-      return calculateDelay(time.getMillisOfSecond(), alignment, 1000);
+      return calculateDelay(time.getLong(ChronoField.MILLI_OF_SECOND), alignment, 1000);
 
     default:
       throw new AlignmentNotSupportedException(alignmentUnit);
     }
   }
 
-  private long calculateDelay(int current, long offset, long max) {
+  private long calculateDelay(long current, long offset, long max) {
     if (current < offset)
       return offset - current;
 

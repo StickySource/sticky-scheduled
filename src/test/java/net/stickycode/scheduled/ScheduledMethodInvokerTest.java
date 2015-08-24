@@ -12,19 +12,15 @@
  */
 package net.stickycode.scheduled;
 
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.verify;
-
 import java.lang.reflect.Method;
 
+import org.junit.Test;
+
+import mockit.Expectations;
+import mockit.Mocked;
+import mockit.Verifications;
 import net.stickycode.exception.TransientException;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
-
-@RunWith(MockitoJUnitRunner.class)
 public class ScheduledMethodInvokerTest {
 
   private static interface RunIt {
@@ -34,26 +30,53 @@ public class ScheduledMethodInvokerTest {
     void invoke(Object arg);
   }
 
-  @Mock
+  @Mocked
   RunIt runIt;
 
   @Test
   public void run() throws SecurityException, NoSuchMethodException {
     invoke("invoke", runIt.getClass());
-    verify(runIt).invoke();
+    new Verifications() {
+      {
+        runIt.invoke();
+      }
+    };
   }
 
   @Test(expected = ScheduledMethodExecutionFailureException.class)
   public void except() throws SecurityException, NoSuchMethodException {
-    doThrow(new RuntimeException()).when(runIt).invoke();
+    new Expectations() {
+      {
+        runIt.invoke();
+        result = new RuntimeException();
+      }
+    };
+
     invoke("invoke", runIt.getClass());
+
+    new Verifications() {
+      {
+        runIt.invoke();
+      }
+    };
   }
 
   @Test
   public void transientExcept() throws SecurityException, NoSuchMethodException {
-    doThrow(new TransientException("Oops")).when(runIt).invoke();
+    new Expectations() {
+      {
+        runIt.invoke();
+        result = new TransientException("Oops");
+      }
+    };
+
     invoke("invoke", runIt.getClass());
-    verify(runIt).invoke();
+
+    new Verifications() {
+      {
+        runIt.invoke();
+      }
+    };
   }
 
   @Test(expected = ThisShouldNeverHappenException.class)

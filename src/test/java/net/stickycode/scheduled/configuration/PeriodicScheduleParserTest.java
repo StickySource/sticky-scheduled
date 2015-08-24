@@ -13,7 +13,7 @@
 package net.stickycode.scheduled.configuration;
 
 import static net.stickycode.fest.ScheduleAssert.assertThat;
-import static org.fest.assertions.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import net.stickycode.scheduled.Schedule;
 
 import org.junit.Test;

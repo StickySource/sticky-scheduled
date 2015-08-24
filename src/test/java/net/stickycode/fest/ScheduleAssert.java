@@ -14,20 +14,21 @@ package net.stickycode.fest;
 
 import java.util.concurrent.TimeUnit;
 
+import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.api.Assertions;
+
 import net.stickycode.scheduled.Schedule;
 
-import org.fest.assertions.Assertions;
-import org.fest.assertions.GenericAssert;
 
 public class ScheduleAssert
-    extends GenericAssert<ScheduleAssert, Schedule> {
+    extends AbstractAssert<ScheduleAssert, Schedule> {
 
   static public ScheduleAssert assertThat(Schedule schedule) {
     return new ScheduleAssert(schedule);
   }
 
   public ScheduleAssert(Schedule actual) {
-    super(ScheduleAssert.class, actual);
+    super(actual, ScheduleAssert.class);
     isNotNull();
   }
 
@@ -66,7 +67,7 @@ public class ScheduleAssert
     return this;
   }
 
-  public ScheduleAssert delayedByNothing(int i) {
+  public ScheduleAssert delayedByNothing() {
     Assertions.assertThat(actual.getInitialDelay()).isEqualTo(0);
     return this;
   }

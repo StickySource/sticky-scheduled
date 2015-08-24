@@ -14,88 +14,85 @@ package net.stickycode.scheduled.aligned;
 
 import static java.util.concurrent.TimeUnit.DAYS;
 import static java.util.concurrent.TimeUnit.HOURS;
-import static org.fest.assertions.Assertions.assertThat;
+import static java.util.concurrent.TimeUnit.MINUTES;
+import static org.assertj.core.api.StrictAssertions.assertThat;
 
+import java.time.LocalTime;
 import java.util.concurrent.TimeUnit;
 
-import net.stickycode.scheduled.aligned.AlignedPeriodicSchedule;
-import net.stickycode.scheduled.aligned.AlignmentMustBeLessThanPeriodException;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeUtils;
-import org.junit.After;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
+
+import mockit.Expectations;
 
 public class ScheduleByDaysTest {
 
-  @Before
-  public void freezeTime() {
-    DateTime now = new DateTime();
-    DateTime midnight = now.minusMillis(now.getMillisOfDay());
-    DateTimeUtils.setCurrentMillisFixed(midnight.plusHours(5).getMillis());
+  public void freezeTimeAt5HoursPastMidnight() {
+    LocalTime now = LocalTime.of(5, 0, 0);
+    new Expectations(LocalTime.class) {
+      {
+        LocalTime.now();
+        result = now;
+      }
+    };
   }
 
-  @After
-  public void unfreezeTime() {
-    DateTimeUtils.setCurrentMillisSystem();
-  }
-
-  @Test(expected=AlignmentMustBeLessThanPeriodException.class)
+  @Test(expected = AlignmentMustBeLessThanPeriodException.class)
   public void alignedGreaterThanMinute() {
     delay(49, HOURS, 1, DAYS);
   }
-  
-  @Test(expected=AlignmentMustBeLessThanPeriodException.class)
+
+  @Test(expected = AlignmentMustBeLessThanPeriodException.class)
   public void makeSureThatUnitConversionDoesLoseAccuracy() {
     // 'upcasting' time truncates, so 70 seconds as a minute == 1 minute
-    // this test would not except if 
+    // this test would not except if
     delay(25, HOURS, 1, DAYS);
   }
-  
+
   @Test
   public void offsetIsGreaterThanCurrentTime() {
-    // 5 hours past
+    freezeTimeAt5HoursPastMidnight();
     // delay is 6 hours
     // next run is at 6 HOURS past in 1 hour
     assertThat(delay(6, HOURS, 1, DAYS)).isEqualTo(1);
   }
-  
+
   @Test
   public void offsetIsSameUnitAsPeriod() {
-    // 5 hours past
+    freezeTimeAt5HoursPastMidnight();
     // delay is 48 hours
     // next run is 48 - 5
     assertThat(delay(2 * 24, HOURS, 3, DAYS)).isEqualTo(43);
   }
-  
+
   @Test
   public void offsetIsLessThanCurrentTime() {
-    // 5 hours past
+    freezeTimeAt5HoursPastMidnight();
     // delay is 2 hours
     // next run is 19 + 2 == 21
-    assertThat(delay(2, HOURS, 1,DAYS)).isEqualTo(21);
+    assertThat(delay(2, HOURS, 1, DAYS)).isEqualTo(21);
   }
-/*  
- for fixed time scheduling
+
   @Test
+  @Ignore("fixed scheduling not working?")
   public void fixedTimeStartAfterNow() {
-    // 5 hours past
-    // start at 6:30 
-    // next run is 60 * 5 + 30 minutes 
+    freezeTimeAt5HoursPastMidnight();
+    // start at 6:30
+    // next run is 60 * 5 + 30 minutes
     // which is 90 minutes from now
-    assertThat(delay(6 * 60 + 30, MINUTES, 1,DAYS)).isEqualTo(90);
+    assertThat(delay(6 * 60 + 30, MINUTES, 1, DAYS)).isEqualTo(90);
   }
-  
+
   @Test
+  @Ignore("fixed scheduling not working?")
   public void fixedTimeStartBeforeNow() {
-    // 5 hours past
-    // start at 01:30 
-    // next run is 60 + 30 minutes 
+    freezeTimeAt5HoursPastMidnight();
+    // start at 01:30
+    // next run is 60 + 30 minutes
     // which is 90 minutes from midnight (+ 60 * 17)
     assertThat(delay(60 + 30, MINUTES, 1, DAYS)).isEqualTo(19 * 60 + 90);
   }
-  */
+
   private long delay(int alignment, TimeUnit minutes, int period, TimeUnit hours) {
     return new AlignedPeriodicSchedule(alignment, minutes, period, hours).getInitialDelay();
   }
