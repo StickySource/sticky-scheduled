@@ -18,6 +18,9 @@ import java.util.concurrent.TimeUnit;
 
 import net.stickycode.scheduled.PeriodicSchedule;
 
+/**
+ * A periodic schedule that is aligned to a boundary, this means it will always run consistently in spite of application start times
+ */
 public class AlignedPeriodicSchedule
     extends PeriodicSchedule {
 
@@ -53,7 +56,6 @@ public class AlignedPeriodicSchedule
   /**
    * The delay in seconds to wait before the initial execution to align the schedule as specified.
    * <b>An alignment of 0 means there is no delay</b>
-   * <p>
    * e.g.
    * <ul>
    * <li>if the user configured a schedule as 'every hour at 15 minutes past'</li>
@@ -61,7 +63,6 @@ public class AlignedPeriodicSchedule
    * <li>then the period would be 60 * 60 seconds</li>
    * <li>and the delay would be 5 * 60 seconds such that the first execution is 15 minutes past</li>
    * </ul>
-   * </p>
    */
   @Override
   public long getInitialDelay() {

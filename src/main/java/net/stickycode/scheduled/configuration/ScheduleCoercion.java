@@ -22,6 +22,9 @@ import net.stickycode.scheduled.Schedule;
 import net.stickycode.scheduled.ScheduleParser;
 import net.stickycode.stereotype.StickyPlugin;
 
+/**
+ * Configuration stereotyping for scheduling methods
+ */
 @StickyPlugin
 public class ScheduleCoercion
     extends AbstractNoDefaultCoercion<Schedule> {

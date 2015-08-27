@@ -14,6 +14,9 @@ package net.stickycode.scheduled;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * A schedule that repeats on a defined periodic cycle
+ */
 public class PeriodicSchedule
     implements Schedule {
 
